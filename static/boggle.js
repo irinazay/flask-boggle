@@ -9,7 +9,7 @@ $(".add-word").on("submit", async function handleSubmit (evt) {
     if (!word) return
 
     if (words.has(word)) {
-      $(".msg").text("Already found ${word}");
+      $(".msg").text(`${word} already found`);
       return;
     }
 
