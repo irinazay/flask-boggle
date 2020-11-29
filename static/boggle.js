@@ -1,5 +1,20 @@
 let score = 0;
 let words = new Set();
+let timer = setInterval(countTimer, 1000);
+let counter = 60;
+
+function countTimer() {
+
+  counter -= 1;
+  $(".timer").text(`${counter}`);
+
+  if (counter === 0) {
+    clearInterval(timer);
+    await scoreGame();
+  }
+}
+console.log(counter)
+
 
 $(".add-word").on("submit", async function handleSubmit (evt) {
     evt.preventDefault();
@@ -31,9 +46,17 @@ $(".add-word").on("submit", async function handleSubmit (evt) {
         $(".msg").text(`Added: ${word}`);
         }
     
-        $word.val("").focus()
+      $(".word").val("")
 
 });
     
    
-
+async function scoreGame() {
+  $(".add-word").hide();
+  const resp = await axios.post("/post-score", { score: score });
+  if (resp.data.brokeRecord) {
+    $(".msg").text(`New record: ${score}`);
+  } else {
+    $(".msg").text(`Final score: ${score}`);
+  }
+}
