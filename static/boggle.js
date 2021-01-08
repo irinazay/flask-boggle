@@ -10,11 +10,9 @@ function countTimer() {
 
   if (counter === 0) {
     clearInterval(timer);
-    await scoreGame();
+    scoreGame();
   }
 }
-console.log(counter)
-
 
 $(".add-word").on("submit", async function handleSubmit (evt) {
     evt.preventDefault();
@@ -24,7 +22,9 @@ $(".add-word").on("submit", async function handleSubmit (evt) {
     if (!word) return
 
     if (words.has(word)) {
+
       $(".msg").text(`${word} already found`);
+
       return;
     }
 
@@ -32,18 +32,19 @@ $(".add-word").on("submit", async function handleSubmit (evt) {
     const resp = await axios.get("/check-word", { params: { word: word }});
     if (resp.data.result === "not-word") {
 
-    $(".msg").text(`${word} is not a valid English word`);
+    $(".msg").text(`${word} is not a valid English word`).removeClass().addClass("msg err");
     
     } else if (resp.data.result === "not-on-board") {
     
-    $(".msg").text(`${word} is not a valid word on this board`); 
+    $(".msg").text(`${word} is not a valid word on this board`).removeClass().addClass("msg err"); 
     
     } else {
         $(".words").append($("<li>", { text: word }));
         score += word.length;
         $(".score").text(score);
         words.add(word);
-        $(".msg").text(`Added: ${word}`);
+      
+        $(".msg").text(`Added: ${word}`).removeClass().addClass("msg ok");
         }
     
       $(".word").val("")
@@ -55,8 +56,8 @@ async function scoreGame() {
   $(".add-word").hide();
   const resp = await axios.post("/post-score", { score: score });
   if (resp.data.brokeRecord) {
-    $(".msg").text(`New record: ${score}`);
+    $(".msg").text(`New record: ${score}`).removeClass().addClass("msg ok");
   } else {
-    $(".msg").text(`Final score: ${score}`);
+    $(".msg").text(`Final score: ${score}`).removeClass().addClass("msg ok");
   }
 }
